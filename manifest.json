@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "ChatGPT TikZ Renderer",
-  "version": "1.0.0",
-  "description": "Render TikZ code blocks on ChatGPT into SVG (CSP-safe via sandbox iframe + local WASM/GZ).",
+  "version": "1.1.1",
+  "description": "Render TikZ code blocks on ChatGPT into SVG (CSP-safe via sandbox + child frame, UTF-8 btoa).",
   "action": { "default_title": "Render TikZ on this page" },
 
   "permissions": [
@@ -11,7 +11,6 @@
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess"
   ],
-
   "host_permissions": [
     "https://chatgpt.com/*",
     "https://chat.openai.com/*",
@@ -20,10 +19,17 @@
 
   "background": { "service_worker": "background.js" },
 
+  "content_security_policy": {
+    "extension_pages":
+    "script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; object-src 'self';"
+  },
+
   "web_accessible_resources": [{
     "resources": [
       "sandbox_frame.html",
       "sandbox_frame.js",
+      "child_frame.html",
+      "child_boot.js",
       "vendor/tikzjax/*",
       "vendor/tikzjax/fonts/*",
       "vendor/bakoma/ttf/*"
